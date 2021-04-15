@@ -1,2 +1,5 @@
+# first, make sure you use conda to install iris
+# $ conda install -c conda-forge iris==2.2.1
 climateforcing>=0.2.0
 cftime>=1.4.0
+nb-clean

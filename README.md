@@ -24,3 +24,7 @@ It's best to do this in conda:
 
     (heatstress) $ cd ~/heatstress  # or whatever the path to your local repo is
     (heatstress) $ pip install -r requirements.txt
+
+7. To ensure that notebooks are cleaned to enable better version control, I use `nb-clean`. This automatically sets up a pre-commit hook to clean notebooks of outputs and cell execution counts. After all is installed, run
+
+    (heatstress) $ nb-clean add-filter
