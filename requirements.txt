@@ -1,0 +1,2 @@
+climateforcing>=0.2.0
+cftime>=1.4.0
