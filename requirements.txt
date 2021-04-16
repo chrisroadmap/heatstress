@@ -1,6 +1,9 @@
-# first, make sure you use conda to install iris
-# $ conda install -c conda-forge iris==2.2.1
+# If you are running on JASMIN, use the jasmin-setup.ipynb notebook
+# to correctly install dependencies rather than this requirements file.
+# 
+# First, make sure you use conda to install iris
+# $ conda install -c conda-forge iris==2.4.0
 climateforcing@git+git://github.com/chrisroadmap/climateforcing@solar-utci#egg=climateforcing
 cftime>=1.4.0
 jupyter
-nb-clean
+nbstripout
