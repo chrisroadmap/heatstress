@@ -3,7 +3,7 @@
 # 
 # First, make sure you use conda to install iris
 # $ conda install -c conda-forge iris==2.4.0
-climateforcing@git+git://github.com/chrisroadmap/climateforcing@solar-utci#egg=climateforcing
+climateforcing>=0.2.1
 cftime>=1.4.0
 jupyter
 nbstripout
