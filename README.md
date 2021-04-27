@@ -1,9 +1,30 @@
 # heatstress
-Analysis of heat stress from CMIP6 models
+Analysis of heat stress from CMIP6 models. These instructions are incomplete!
 
-PLEASE NOTE THIS DOESN'T WORK YET ON JASMIN
+## Getting started: JASMIN
 
-## Getting started
+1. Open a JASMIN notebook server in the Python+JasPy environment
+2. run jasmin-setup.ipynb
+
+This will set up the environment within the JASMIN notebook and creates a conda environment called `heatstress` that contains the necessary packages. You can use the `heatstress` environment when starting up new JupyterNotebooks for analysis work.
+
+3. If you want to run any of the jasmin-scripts, from the JASMIN compute servers on the command line (e.g. sci1, sci2) do
+
+```
+$ module load jaspy
+$ conda init
+```
+
+Close your shell, restart your shell, then
+
+```
+$ conda activate heatstress
+```
+
+This should work if you have done steps 1 and 2 above.
+
+## Getting started: on Leeds server, or personal computer
+
 It's best to do this in conda:
 
 1. Download the miniconda3 installer
