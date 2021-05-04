@@ -1,5 +1,4 @@
 #!/bin/bash
-mkdir -p job_output
 #SBATCH -p short-serial
 #SBATCH -o job_output/%j.out
 #SBATCH -e job_output/%j.err
