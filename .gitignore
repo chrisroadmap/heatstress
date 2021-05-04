@@ -1,6 +1,10 @@
 # vim temp files
 *.swp
 
+# SLURM batch job output
+*.out
+*.err
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
