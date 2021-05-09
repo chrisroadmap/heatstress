@@ -4,7 +4,7 @@
 #SBATCH -e job_output/%j.err
 #SBATCH -t 24:00:00
 #SBATCH --mem=32000
-#SBATCH --array==0-25
+#SBATCH --array=0-25
 
 conda activate heatstress
 ./run_utci.py ${SLURM_ARRAY_TASK_ID}
