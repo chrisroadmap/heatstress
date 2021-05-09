@@ -1,5 +1,11 @@
+"""
+This script pulls out the models, scenarios and runs that contain all the correct
+data that we need to run UTCI and saves it in a CSV file.
+"""
+
 import glob
 import pandas as pd
+from copy import copy
 
 variables = ['tas', 'huss', 'uas', 'vas', 'rsds', 'rsdsdiff', 'rsus', 'rlds', 'rlus']
 
@@ -42,7 +48,12 @@ for model in df.model.unique():
                 models_out.append(model)
                 scens_out.append(scenario)
                 runs_out.append(run)
+                models_out.append(model)
+                scens_out.append('historical')
+                runs_out.append(run)
+
 
 df_out = pd.DataFrame(list(zip(models_out, scens_out, runs_out)), columns=['model', 'scenario', 'run'])
+df_out.drop_duplicates(inplace=True, ignore_index=True)
 
 df_out.to_csv('../data/3hr_models.csv')

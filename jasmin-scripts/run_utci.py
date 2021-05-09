@@ -8,7 +8,10 @@ on the command line.
 For now it saves to /scratch (we need a group workspace for this work)
 
 Usage:
-    python run_generic.py model scenario run
+    python run_generic.py index
+
+index is an integer that provides the model, scenario and run to use and is a lookup to
+a csv file.
 
 model: precise name of the model to run (e.g IITM-ESM)
 scenario: precise CMIP6-style name of the scenario to run (e.g. ssp585)
@@ -25,11 +28,14 @@ import iris
 from iris.experimental.equalise_cubes import equalise_attributes
 from iris.util import unify_time_units
 import matplotlib.pyplot as pl
+import pandas as pd
 import warnings
 import sys
 import glob
 
-model, scenario, run = (sys.argv[1], sys.argv[2], sys.argv[3])
+index = sys.argv[1]
+df = pd.read_csv('../data/3hr_models.csv', index_col=0)
+model, scenario, run = df.loc[int(index)]
 
 # data output directory: need a GWS!
 dataout = "/work/scratch-nopw/pmcjs/%s/%s/%s/" % (model, scenario, run)
@@ -60,7 +66,7 @@ lonmesh, latmesh = np.meshgrid(lon, lat)
 nlat = len(lat)
 nlon = len(lon)
 
-# get an array of zenith angles and lit fractions for 2100
+# sort out times
 all_time_coord = cubes['tas'].coord('time')
 all_time_points = all_time_coord.units.num2date(all_time_coord.points)
 n_all_time = len(all_time_points)
@@ -70,6 +76,9 @@ last_time = all_time_points[-1]
 
 # start the year chunking loop
 for year in range(first_time.year, last_time.year):
+    # historical: we want to start in 1985
+    if year < 1985:
+        continue
     # tas timesteps I think are at the end of the period, i.e. 03:00 for 00:00 to 03:00 mean
     # radiation timesteps should be at the centre: 01:30 for 00:00 to 03:00 mean
     i_start = int(8 * (cftime.date2num(cftime.datetime(year, 1, 1, 3, 0, 0, calendar=calendar), 'days since 1850-01-01 00:00', calendar=calendar) - cftime.date2num(first_time, 'days since 1850-01-01 00:00', calendar=calendar)))
