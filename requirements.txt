@@ -7,3 +7,4 @@ climateforcing>=0.2.1
 cftime>=1.4.0
 jupyter
 nbstripout
+tqdm
