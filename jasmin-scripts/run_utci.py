@@ -75,7 +75,7 @@ first_time = all_time_points[0]
 last_time = all_time_points[-1]
 
 # start the year chunking loop
-for year in range(first_time.year, last_time.year+1):
+for year in range(first_time.year, last_time.year):
     # historical: we want to start in 1985
     if year < 1985:
         continue
