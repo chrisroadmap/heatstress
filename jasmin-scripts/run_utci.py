@@ -36,6 +36,7 @@ import glob
 index = sys.argv[1]
 df = pd.read_csv('../data/3hr_models.csv', index_col=0)
 model, scenario, run = df.loc[int(index)]
+print(model, scenario, run)
 
 # data output directory: need a GWS!
 dataout = "/work/scratch-nopw/pmcjs/%s/%s/%s/" % (model, scenario, run)
@@ -45,7 +46,7 @@ mkdir_p(dataout)
 # glob
 path = "/badc/cmip6/data/CMIP6/*/*/%s/%s/%s/3hr/" % (model, scenario, run)
 
-# the final bit of the path will also vary by model and needs to be generalised
+# the final bit of the path will also vary by model grid
 vars = ['tas', 'huss', 'rlds', 'rlus', 'rsds', 'rsus', 'rsdsdiff', 'uas', 'vas']
 cubes = {}
 with warnings.catch_warnings():
@@ -57,6 +58,14 @@ with warnings.catch_warnings():
         cubes[var] = cubes[var].concatenate_cube()
 fp = glob.glob(path + '%s/*/latest/%s_3hr_%s_%s_%s_*_*.nc' % (var, var, model, scenario, run))
 grid = fp[0].split('/')[12]
+
+# check that all of the cubes are the same shape. If they are not, there are some missing variable slices and
+# the outputs will not make sense.
+# it's sufficient to check everything relative to tas
+tas_shape = cubes['tas'].shape
+for var in vars:
+    if cubes[var].shape != tas_shape:
+        raise ValueError(var + ' is a different shape to tas.')
 
 # get lat and lon
 lat = cubes['tas'].coord('latitude').points
@@ -79,14 +88,30 @@ for year in range(first_time.year, last_time.year):
     # historical: we want to start in 1985
     if year < 1985:
         continue
-    # tas timesteps I think are at the end of the period, i.e. 03:00 for 00:00 to 03:00 mean
-    # radiation timesteps should be at the centre: 01:30 for 00:00 to 03:00 mean
-    i_start = int(8 * (cftime.date2num(cftime.datetime(year, 1, 1, 3, 0, 0, calendar=calendar), 'days since 1850-01-01 00:00', calendar=calendar) - cftime.date2num(first_time, 'days since 1850-01-01 00:00', calendar=calendar)))
+    # tas timesteps are usually at the end of the period, i.e. 03:00 for 00:00 to 03:00.
+    # the first timestep of each year is thus 01 January at 03:00 UTC.
+    # it is not clear whether this is an 03:00 instantaneous value or 00:00 to 03:00 mean.
+    # hopefully, if it is instantaneous, 3hr data means the biases won't be huge. It also
+    # means that the radiation and temperature time steps are in sync.
+
+    # sometimes however this isn't the case. The BCC model has tas timesteps running from
+    # 00:00 which are 22:30 to 01:30 means. In BCC the first time step of the year is 
+    # 01 January at 00:00 UTC.
+    # there's probably a nice iris-friendly way to do this, but for now, just treat BCC
+    # as an exception to the usual rule, and be sure to check the filenames and metadata
+    # for any new models.
+    if model=='BCC-CSM2-MR':
+        first_hour_tas=0
+    else:
+        first_hour_tas=3
+
+    i_start = int(8 * (cftime.date2num(cftime.datetime(year, 1, 1, first_hour_tas, 0, 0, calendar=calendar), 'days since 1850-01-01 00:00', calendar=calendar) - cftime.date2num(first_time, 'days since 1850-01-01 00:00', calendar=calendar)))
     print(model, scenario, run, year, i_start)
     days_in_year = cftime.date2num(cftime.datetime(year+1, 1, 1, 0, 0, 0, calendar=calendar), 'days since 1850-01-01 00:00', calendar=calendar) - cftime.date2num(cftime.datetime(year, 1, 1, 0, 0, 0, calendar=calendar), 'days since 1850-01-01 00:00', calendar=calendar)
     timepoints_in_year = 8 * days_in_year  # 8 x 3-hr timepoints per day
     i_end = i_start + timepoints_in_year
     mjd = np.zeros(timepoints_in_year)
+    # radiation timepoints all seem to be 01:30, 04:30, ...
     first_day_of_year = cftime.datetime(year, 1, 1, 1, 30, calendar=calendar)
     for imjd in range(timepoints_in_year):
         mjd[imjd] = modified_julian_date(first_day_of_year + datetime.timedelta(hours=3*imjd))
