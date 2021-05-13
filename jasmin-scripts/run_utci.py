@@ -34,9 +34,10 @@ import sys
 import glob
 
 index = sys.argv[1]
-df = pd.read_csv('../data/3hr_models.csv', index_col=0)
-model, scenario, run = df.loc[int(index)]
+df = pd.read_csv('3hr_models.csv', index_col=0)
+model, scenario, run, startyear, endyear = df.loc[int(index)]
 print(model, scenario, run)
+print()
 
 # data output directory: need a GWS!
 dataout = "/work/scratch-nopw/pmcjs/%s/%s/%s/" % (model, scenario, run)
@@ -59,13 +60,14 @@ with warnings.catch_warnings():
 fp = glob.glob(path + '%s/*/latest/%s_3hr_%s_%s_%s_*_*.nc' % (var, var, model, scenario, run))
 grid = fp[0].split('/')[12]
 
-# check that all of the cubes are the same shape. If they are not, there are some missing variable slices and
+# check that all of the cubes are the same number of time points.
+# If they are not, there are some missing variable slices and
 # the outputs will not make sense.
 # it's sufficient to check everything relative to tas
-tas_shape = cubes['tas'].shape
+tas_shape = cubes['tas'].shape[0]
 for var in vars:
-    if cubes[var].shape != tas_shape:
-        raise ValueError(var + ' is a different shape to tas.')
+    if cubes[var].shape[0] != tas_shape:
+        raise ValueError(var + ' is a different number of time points to tas.')
 
 # get lat and lon
 lat = cubes['tas'].coord('latitude').points
@@ -84,10 +86,10 @@ first_time = all_time_points[0]
 last_time = all_time_points[-1]
 
 # start the year chunking loop
-for year in range(first_time.year, last_time.year):
+for year in range(int(startyear), int(endyear)):
     # historical: we want to start in 1985
-    if year < 1985:
-        continue
+#    if year < 1985:
+#        continue
     # tas timesteps are usually at the end of the period, i.e. 03:00 for 00:00 to 03:00.
     # the first timestep of each year is thus 01 January at 03:00 UTC.
     # it is not clear whether this is an 03:00 instantaneous value or 00:00 to 03:00 mean.

@@ -3,8 +3,8 @@
 #SBATCH -o job_output/%j.out
 #SBATCH -e job_output/%j.err
 #SBATCH -t 24:00:00
-#SBATCH --mem=32000
-#SBATCH --array=0-25
+#SBATCH --mem=64000  # 64M needed for HadGEM3-MM, else 32M usually sufficient
+#SBATCH --array=0-39
 
 conda activate heatstress
 ./run_utci.py ${SLURM_ARRAY_TASK_ID}
