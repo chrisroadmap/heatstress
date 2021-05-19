@@ -8,7 +8,7 @@ on the command line.
 For now it saves to /scratch (we need a group workspace for this work)
 
 Usage:
-    python run_generic.py index
+    python run_utci.py index
 
 index is an integer that provides the model, scenario and run to use and is a lookup to
 a csv file.
