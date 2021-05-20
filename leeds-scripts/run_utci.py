@@ -43,7 +43,7 @@ mkdir_p(dataout)
 path = "/nfs/b0110/Data/cmip6/%s/%s/%s/3hr/" % (model, scenario, run)
 
 # the final bit of the path will also vary by model grid
-vars = ['tas', 'huss', 'rlds', 'rlus', 'rsds', 'rsus', 'rsdsdiff', 'uas', 'vas']
+vars = ['tas', 'huss', 'ps', 'rlds', 'rlus', 'rsds', 'rsus', 'rsdsdiff', 'uas', 'vas']
 cubes = {}
 with warnings.catch_warnings():
     warnings.simplefilter('ignore')
@@ -97,7 +97,7 @@ for year in range(int(startyear), int(endyear)):
     # there's probably a nice iris-friendly way to do this, but for now, just treat BCC
     # as an exception to the usual rule, and be sure to check the filenames and metadata
     # for any new models.
-    if model=='BCC-CSM2-MR':
+    if model in ['BCC-CSM2-MR', 'MRI-ESM2-0']:
         first_hour_tas=0
     else:
         first_hour_tas=3
@@ -155,7 +155,8 @@ for year in range(int(startyear), int(endyear)):
         {
             "tas": cubes['tas'][i_start:i_end,...].data,
             "sfcWind": wind,
-            "huss": cubes['huss'][i_start:i_end,...].data
+            "huss": cubes['huss'][i_start:i_end,...].data,
+            "ps": cubes['ps'][i_start:i_end,...].data
         },
         mrt
     )
