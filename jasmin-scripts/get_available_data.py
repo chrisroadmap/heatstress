@@ -13,9 +13,8 @@ grid_chunk_size = 40000 * 86 * 365 * 8  # lat-lon x years x days x times per day
 # this is the number of data points we'll allow in a model before we break up the run into chunks
 # As a guide, SSP scenarios in the BCC model just about complete (51200 lat x lon) whereas CMCC (55296) do not
 
-variables = ['tas', 'huss', 'uas', 'vas', 'rsds', 'rsdsdiff', 'rsus', 'rlds', 'rlus']
+variables = ['tas', 'huss', 'ps', 'uas', 'vas', 'rsds', 'rsdsdiff', 'rsus', 'rlds', 'rlus']
 
-#for variable in variables:
 dirlist = sorted(glob.glob('/badc/cmip6/data/CMIP6/ScenarioMIP/*/*/*/*/3hr/*/g*/latest/'))
 insts = [i.split('/')[6] for i in dirlist]
 models = [i.split('/')[7] for i in dirlist]
@@ -52,7 +51,7 @@ for model in df.model.unique():
             for variable in variables:
                 if variable in vars_exist and variable in df_hist[(df_hist['model']==model) & (df_hist['run']==run)].variable.tolist():
                     count=count+1
-            if count==9:
+            if count==10:
                 datadir = '/badc/cmip6/data/CMIP6/ScenarioMIP/*/%s/%s/%s/3hr/tas/g*/latest/*' % (model, scenario, run)
                 filename = glob.glob(datadir)[0]
                 nc = Dataset(filename)

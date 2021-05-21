@@ -48,7 +48,7 @@ mkdir_p(dataout)
 path = "/badc/cmip6/data/CMIP6/*/*/%s/%s/%s/3hr/" % (model, scenario, run)
 
 # the final bit of the path will also vary by model grid
-vars = ['tas', 'huss', 'rlds', 'rlus', 'rsds', 'rsus', 'rsdsdiff', 'uas', 'vas']
+vars = ['tas', 'huss', 'ps', 'rlds', 'rlus', 'rsds', 'rsus', 'rsdsdiff', 'uas', 'vas']
 cubes = {}
 with warnings.catch_warnings():
     warnings.simplefilter('ignore')
@@ -98,11 +98,15 @@ for year in range(int(startyear), int(endyear)):
 
     # sometimes however this isn't the case. The BCC model has tas timesteps running from
     # 00:00 which are 22:30 to 01:30 means. In BCC the first time step of the year is 
-    # 01 January at 00:00 UTC.
+    # 01 January at 00:00 UTC. The MRI model also starts at 00:00 rather than 03:00, and
+    # the metadata confirms that these are point values and not time means in MRI. It
+    # also means that in these two models the temperature and radiation are 90 mins out
+    # of sync - hopefully this is not critical, but if we wanted to adjust for this we
+    # could take the mean of two neighbouring time points.
     # there's probably a nice iris-friendly way to do this, but for now, just treat BCC
-    # as an exception to the usual rule, and be sure to check the filenames and metadata
-    # for any new models.
-    if model=='BCC-CSM2-MR':
+    # and MRI as exceptions to the usual rule, and be sure to check the filenames and
+    # metadata for any new models.
+    if model in ['BCC-CSM2-MR', 'MRI-ESM2-0']:
         first_hour_tas=0
     else:
         first_hour_tas=3
@@ -118,6 +122,14 @@ for year in range(int(startyear), int(endyear)):
     for imjd in range(timepoints_in_year):
         mjd[imjd] = modified_julian_date(first_day_of_year + datetime.timedelta(hours=3*imjd))
 
+    # KACE sets diffuse irradiance and upwelling shortwave irradiance at night-time points
+    # to missing, rather than zero, which messes up the computation
+    rsdsdiff = cubes['rsdsdiff'][i_start:i_end,...].data
+    rsus = cubes['rsus'][i_start:i_end,...].data
+    if model=='KACE-1-0-G':
+        rsdsdiff = rsdsdiff.filled(fill_value = 0)
+        rsus = rsus.filled(fill_value = 0)
+
     # calculate 3hr-mean solar zenith
     mean_cosz = np.ones((timepoints_in_year, nlat, nlon)) * np.nan
     lit = np.ones((timepoints_in_year, nlat, nlon)) * np.nan
@@ -129,8 +141,8 @@ for year in range(int(startyear), int(endyear)):
         {
             "rlds": cubes['rlds'][i_start:i_end,...].data,
             "rlus": cubes['rlus'][i_start:i_end,...].data,
-            "rsdsdiff": cubes['rsdsdiff'][i_start:i_end,...].data,
-            "rsus": cubes['rsus'][i_start:i_end,...].data,
+            "rsdsdiff": rsdsdiff,
+            "rsus": rsus,
             "rsds": cubes['rsds'][i_start:i_end,...].data,
         },
         angle_factor_down=0.5,
@@ -152,7 +164,8 @@ for year in range(int(startyear), int(endyear)):
         {
             "tas": cubes['tas'][i_start:i_end,...].data,
             "sfcWind": wind,
-            "huss": cubes['huss'][i_start:i_end,...].data
+            "huss": cubes['huss'][i_start:i_end,...].data,
+            "ps": cubes['ps'][i_start:i_end,...].data
         },
         mrt
     )
