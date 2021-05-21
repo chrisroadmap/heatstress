@@ -48,7 +48,7 @@ mkdir_p(dataout)
 path = "/badc/cmip6/data/CMIP6/*/*/%s/%s/%s/3hr/" % (model, scenario, run)
 
 # the final bit of the path will also vary by model grid
-vars = ['tas', 'huss', 'rlds', 'rlus', 'rsds', 'rsus', 'rsdsdiff', 'uas', 'vas']
+vars = ['tas', 'huss', 'ps', 'rlds', 'rlus', 'rsds', 'rsus', 'rsdsdiff', 'uas', 'vas']
 cubes = {}
 with warnings.catch_warnings():
     warnings.simplefilter('ignore')
@@ -164,7 +164,8 @@ for year in range(int(startyear), int(endyear)):
         {
             "tas": cubes['tas'][i_start:i_end,...].data,
             "sfcWind": wind,
-            "huss": cubes['huss'][i_start:i_end,...].data
+            "huss": cubes['huss'][i_start:i_end,...].data,
+            "ps": cubes['ps'][i_start:i_end,...].data
         },
         mrt
     )
