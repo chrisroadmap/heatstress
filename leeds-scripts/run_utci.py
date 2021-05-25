@@ -48,6 +48,10 @@ cubes = {}
 with warnings.catch_warnings():
     warnings.simplefilter('ignore')
     for var in vars:
+        # CanESM5 does not have surface pressure for two experiments, but it would be a
+        # shame to not use it
+        if var=='ps' and model=='CanESM5':
+            continue
         cubes[var] = iris.load(path + '%s/*/%s_3hr_%s_%s_%s_*_*.nc' % (var, var, model, scenario, run))
         equalise_attributes(cubes[var])
         unify_time_units(cubes[var])
@@ -61,6 +65,8 @@ grid = fp[0].split('/')[10]
 # it's sufficient to check everything relative to tas
 tas_shape = cubes['tas'].shape[0]
 for var in vars:
+    if var=='ps' and model=='CanESM5':
+        continue
     if cubes[var].shape[0] != tas_shape:
         raise ValueError(var + ' is a different number of time points to tas.')
 
@@ -82,9 +88,6 @@ last_time = all_time_points[-1]
 
 # start the year chunking loop
 for year in range(int(startyear), int(endyear)):
-    # historical: we want to start in 1985
-#    if year < 1985:
-#        continue
     # tas timesteps are usually at the end of the period, i.e. 03:00 for 00:00 to 03:00.
     # the first timestep of each year is thus 01 January at 03:00 UTC.
     # it is not clear whether this is an 03:00 instantaneous value or 00:00 to 03:00 mean.
@@ -150,13 +153,19 @@ for year in range(int(startyear), int(endyear)):
     vas_cube_regrid = cubes['vas'][i_start:i_end,...].regrid(cubes['tas'], iris.analysis.Linear())
     wind = np.sqrt(uas_cube_regrid.data**2 + vas_cube_regrid.data**2)
 
+    # for surface pressure, use default if no value provided
+    if model=='CanESM5':
+        ps = 101325
+    else:
+        ps = cubes['ps'][i_start:i_end,...].data
+
     # calculate UTCI
     utci = universal_thermal_climate_index(
         {
             "tas": cubes['tas'][i_start:i_end,...].data,
             "sfcWind": wind,
             "huss": cubes['huss'][i_start:i_end,...].data,
-            "ps": cubes['ps'][i_start:i_end,...].data
+            "ps": ps
         },
         mrt
     )
