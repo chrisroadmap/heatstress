@@ -1,8 +1,5 @@
-<<<<<<< HEAD
 #!/usr/bin/env python
 
-=======
->>>>>>> da218481275597802f8cdfd8000d46d897602941
 """
 This script regrids the climate model output data to 1x1 degree.
 """
@@ -15,10 +12,7 @@ import iris.coord_categorisation
 import numpy as np
 import glob
 from climateforcing.utils import mkdir_p
-<<<<<<< HEAD
 import sys
-=======
->>>>>>> da218481275597802f8cdfd8000d46d897602941
 
 # Make a dummy grid
 latitude = iris.coords.DimCoord(
@@ -67,6 +61,20 @@ for model in models:
         first_file=True
         for scenario in scenarios[model][run]:
             filelist = glob.glob(origdir + '%s/%s/%s/*.nc' % (model, scenario, run))
+models = ['HadGEM3-GC31-LL']
+runs = {
+    'HadGEM3-GC31-LL': ['r1i1p1f3']
+}
+scenarios = {}
+scenarios['HadGEM3-GC31-LL'] = {}
+scenarios['HadGEM3-GC31-LL']['r1i1p1f3'] = ['historical', 'ssp126', 'ssp245', 'ssp585']
+
+stopflag = True
+for model in models:
+    for run in runs[model]:
+        for scenario in scenarios[model][run]:
+            filelist = glob.glob(origdir + '%s/%s/%s/*.nc' % (model, scenario, run))
+            first_file = True
             for file in filelist:
                 cube_orig = iris.load_cube(file)
                 filename = file.split('/')[-1]
@@ -85,3 +93,7 @@ for model in models:
                 mkdir_p(outdir)
                 iris.save(cube_regrid, outdir + filename)
                 sys.stdout.write(filename + ' success\n') 
+                print(filename + ' success') 
+                if stopflag:
+                    import sys
+                    sys.exit()
