@@ -1,8 +1,5 @@
-<<<<<<< HEAD
 #!/usr/bin/env python
 
-=======
->>>>>>> add regridder for CMIP UTCI data
 """
 This script regrids the climate model output data to 1x1 degree.
 """
@@ -15,10 +12,7 @@ import iris.coord_categorisation
 import numpy as np
 import glob
 from climateforcing.utils import mkdir_p
-<<<<<<< HEAD
 import sys
-=======
->>>>>>> add regridder for CMIP UTCI data
 
 # Make a dummy grid
 latitude = iris.coords.DimCoord(
@@ -51,7 +45,6 @@ dummy_cube.coord('latitude').guess_bounds()
 origdir = '/gws/pw/j05/cop26_hackathons/bristol/project10/utci_projections/'
 regriddir = '/gws/pw/j05/cop26_hackathons/bristol/project10/utci_projections_1deg/'
 
-<<<<<<< HEAD
 models = ['HadGEM3-GC31-LL', 'BCC-CSM2-MR']
 runs = {
     'HadGEM3-GC31-LL': ['r1i1p1f3'],
@@ -68,22 +61,22 @@ for model in models:
         first_file=True
         for scenario in scenarios[model][run]:
             filelist = glob.glob(origdir + '%s/%s/%s/*.nc' % (model, scenario, run))
-=======
->>>>>>> add regridder for CMIP UTCI data
-models = ['HadGEM3-GC31-LL']
+models = ['HadGEM3-GC31-LL', 'BCC-CSM2-MR']
 runs = {
-    'HadGEM3-GC31-LL': ['r1i1p1f3']
+    'HadGEM3-GC31-LL': ['r1i1p1f3'],
+    'BCC-CSM2-MR': ['r1i1p1f1'],
 }
 scenarios = {}
 scenarios['HadGEM3-GC31-LL'] = {}
+scenarios['BCC-CSM2-MR'] = {}
 scenarios['HadGEM3-GC31-LL']['r1i1p1f3'] = ['historical', 'ssp126', 'ssp245', 'ssp585']
+scenarios['BCC-CSM2-MR']['r1i1p1f1'] = ['historical', 'ssp126', 'ssp245', 'ssp585']
 
-stopflag = True
 for model in models:
     for run in runs[model]:
+        first_file=True
         for scenario in scenarios[model][run]:
             filelist = glob.glob(origdir + '%s/%s/%s/*.nc' % (model, scenario, run))
-            first_file = True
             for file in filelist:
                 cube_orig = iris.load_cube(file)
                 filename = file.split('/')[-1]
@@ -102,7 +95,3 @@ for model in models:
                 mkdir_p(outdir)
                 iris.save(cube_regrid, outdir + filename)
                 sys.stdout.write(filename + ' success\n') 
-                print(filename + ' success') 
-                if stopflag:
-                    import sys
-                    sys.exit()
