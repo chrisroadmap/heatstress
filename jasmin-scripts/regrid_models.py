@@ -42,22 +42,34 @@ dummy_cube.coord('longitude').guess_bounds()
 dummy_cube.coord('latitude').guess_bounds()
 
 # do the regrid and save output
-origdir = '/gws/pw/j05/cop26_hackathons/bristol/project10/utci_projections/'
+#origdir = '/gws/pw/j05/cop26_hackathons/bristol/project10/utci_projections/'
+origdir = '/work/scratch-nopw/pmcjs/'
 regriddir = '/gws/pw/j05/cop26_hackathons/bristol/project10/utci_projections_1deg/'
 
-models = ['HadGEM3-GC31-LL', 'BCC-CSM2-MR']
-runs = {
-    'HadGEM3-GC31-LL': ['r1i1p1f3'],
-    'BCC-CSM2-MR': ['r1i1p1f1'],
-}
-scenarios = {}
-scenarios['HadGEM3-GC31-LL'] = {}
-scenarios['BCC-CSM2-MR'] = {}
-scenarios['HadGEM3-GC31-LL']['r1i1p1f3'] = ['historical', 'ssp126', 'ssp245', 'ssp585']
-scenarios['BCC-CSM2-MR']['r1i1p1f1'] = ['historical', 'ssp126', 'ssp245', 'ssp585']
+#models = ['HadGEM3-GC31-LL', 'BCC-CSM2-MR', 'CMCC-ESM2']
+#runs = {
+#    'HadGEM3-GC31-LL': ['r1i1p1f3'],
+#    'BCC-CSM2-MR': ['r1i1p1f1'],
+#    'CMCC-ESM2': ['r1i1p1f1'],
+#}
+#scenarios = {}
+#scenarios['HadGEM3-GC31-LL'] = {}
+#scenarios['BCC-CSM2-MR'] = {}
+#scenarios['CMCC-ESM2'] = {}
+#scenarios['HadGEM3-GC31-LL']['r1i1p1f3'] = ['historical', 'ssp126', 'ssp245', 'ssp585']
+#scenarios['BCC-CSM2-MR']['r1i1p1f1'] = ['historical', 'ssp126', 'ssp245', 'ssp585']
+#scenarios['CMCC-ESM2']['r1i1p1f1'] = ['historical', 'ssp126', 'ssp245', 'ssp585']
 
-for model in models:
-    for run in runs[model]:
+#models = ['CMCC-ESM2']
+#runs = {
+#    'CMCC-ESM2': ['r1i1p1f1']
+#}
+scenarios = {}
+scenarios['CMCC-ESM2'] = {}
+scenarios['CMCC-ESM2']['r1i1p1f1'] = ['historical', 'ssp126', 'ssp245', 'ssp585']
+
+for model in scenarios:
+    for run in scenarios[model]:
         first_file=True
         for scenario in scenarios[model][run]:
             filelist = glob.glob(origdir + '%s/%s/%s/*.nc' % (model, scenario, run))
