@@ -6,7 +6,7 @@
 #SBATCH --mem=32000 
 
 conda activate heatstress
-./run_regrid.py
+./regrid_models.py
 
 ## Usage:
 ## make sure you are in the correct directory: from the repo base:
