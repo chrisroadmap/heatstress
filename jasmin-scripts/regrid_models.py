@@ -1,8 +1,5 @@
-<<<<<<< HEAD
 #!/usr/bin/env python
 
-=======
->>>>>>> da218481275597802f8cdfd8000d46d897602941
 """
 This script regrids the climate model output data to 1x1 degree.
 """
@@ -15,10 +12,7 @@ import iris.coord_categorisation
 import numpy as np
 import glob
 from climateforcing.utils import mkdir_p
-<<<<<<< HEAD
 import sys
-=======
->>>>>>> da218481275597802f8cdfd8000d46d897602941
 
 # Make a dummy grid
 latitude = iris.coords.DimCoord(
