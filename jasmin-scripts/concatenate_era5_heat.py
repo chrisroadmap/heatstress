@@ -18,7 +18,7 @@ era5heatdir_in = '/work/scratch-nopw/pmcjs/era5-heat_1deg/'
 
 mkdir_p('/gws/pw/j05/cop26_hackathons/bristol/project10/era5-heat_1deg/')
 
-for year in tqdm(range(1985, 2000)):
+for year in tqdm(range(2000, 2015)):
     cube_era5 = iris.load(era5heatdir_in + 'ECMWF_utci_%4d*_v1.0_con.nc' % year)
     equalise_attributes(cube_era5)
     unify_time_units(cube_era5)

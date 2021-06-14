@@ -28,7 +28,7 @@ from tqdm import tqdm
 era5heatdir = '/gws/pw/j05/cop26_hackathons/bristol/project10/era5-heat_1deg/'
 modeldir = '/gws/pw/j05/cop26_hackathons/bristol/project10/utci_projections_1deg/HadGEM3-GC31-LL/historical/r1i1p1f3/'
 
-## just 15 years for now
+## just 30 years for now
 ## load up the regridding annual chunks and concatenate
 cube_era5 = iris.load(era5heatdir + 'ECMWF_utci_*_v1.0_con.nc')
 equalise_attributes(cube_era5)
@@ -37,18 +37,13 @@ for cu in cube_era5:
     cu.coord('time').points = cu.coord('time').points.astype(int)
 cube_era5 = cube_era5.concatenate_cube()
 
-## also 15 years of HadGEM3 historical
-cube_model = iris.load(modeldir + 'utci_3hr_HadGEM3-GC31-LL_historical_r1i1p1f3_gn_19*.nc')
+## also 30 years of HadGEM3 historical
+cube_model = iris.load(modeldir + 'utci_3hr_HadGEM3-GC31-LL_historical_r1i1p1f3_gn_*.nc')
 cube_model = cube_model.concatenate_cube()
-
-## sci2 did not like this
-#model_data = cube_model.data
-#era5_data = cube_era5.data
 
 # generalise this
 leeds_model = cube_model[:,143,178]
 leeds_era5 = cube_era5[:,143,178]
-
 
 model_params = {}
 model_params['a'] = np.zeros((cube_model.shape[1:3]))
@@ -67,22 +62,6 @@ era5_params['lon'] = cube_era5.coord('longitude').points
 
 model_params['a'][143,178], model_params['loc'][143,178], model_params['scale'][143,178] = st.skewnorm.fit(leeds_model.data)
 era5_params['a'][143,178], era5_params['loc'][143,178], era5_params['scale'][143,178] = st.skewnorm.fit(leeds_era5.data)
-
-
-# In[ ]:
-
-# TODO: generalise
-#for ilat in tqdm(range(len(model_params['lat']))):
-#    for ilon in tqdm(range(len(model_params['lon']))):
-#        model_params['a'][ilat, ilon], model_params['loc'][ilat, ilon], model_params['scale'][ilat, ilon] = (
-#            st.skewnorm.fit(cube_model[:, ilat, ilon].data)
-#        )
-#        era5_params['a'][ilat, ilon], era5_params['loc'][ilat, ilon], era5_params['scale'][ilat, ilon] = (
-#            st.skewnorm.fit(cube_era5[:, ilat, ilon].data)
-#        )
-#
-
-
 
 # ## How to bias correct
 # 
@@ -112,7 +91,6 @@ def bias_correct(x, model_params, obs_params, ilat, ilon):
 # 
 # For now, just use 2100
 
-
 modelfuturedir = '/gws/pw/j05/cop26_hackathons/bristol/project10/utci_projections_1deg/HadGEM3-GC31-LL/ssp585/r1i1p1f3/'
 cube_model_future = iris.load(modelfuturedir + 'utci_3hr_HadGEM3-GC31-LL_ssp585_r1i1p1f3_gn_210001010300-210101010000.nc')
 cube_model_future = cube_model_future.concatenate_cube()
@@ -120,9 +98,6 @@ cube_model_future = cube_model_future.concatenate_cube()
 
 leeds_model_future = cube_model_future[:,143,178]
 
-
-#with open('/nfs/b0110/Data/ERA5-HEAT/regrid_hadgem3_2100.npy', 'wb') as f:
-#    pickle.dump(cube_model_future_regrid, f, protocol=pickle.HIGHEST_PROTOCOL)
 
 model_future_params = {}
 model_future_params['a'] = np.zeros((cube_model_future.shape[1:3]))
@@ -146,10 +121,6 @@ model_future_params['a'][143,178], model_future_params['loc'][143,178], model_fu
 
 # bias correct the Leeds 2100 projections
 leeds_model_future_biascorrected = bias_correct(leeds_model_future.data, model_params, era5_params, 143, 178)
-
-
-# In[ ]:
-
 
 pl.hist(leeds_model.data, density=True, label='HadGEM3-GC31-LL 1985', alpha=0.3, bins=50)
 pl.hist(leeds_era5.data, density=True, label='ERA5-HEAT', alpha=0.3, bins=50)
