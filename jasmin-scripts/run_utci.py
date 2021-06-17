@@ -45,7 +45,7 @@ mkdir_p(dataout)
 
 # data input directory: this will differ for different models. With iris we can use
 # glob
-path = "/gws/scratch-nopw/pmcjs/%s/%s/%s/3hr/rsds/gn/" (model, scenario, run)
+path = "/work/scratch-nopw/pmcjs/%s/%s/%s/3hr/" % (model, scenario, run)
 
 # the final bit of the path will also vary by model grid
 vars = ['tas', 'huss', 'ps', 'rlds', 'rlus', 'rsds', 'rsus', 'rsdsdiff', 'uas', 'vas']
