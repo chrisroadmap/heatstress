@@ -45,7 +45,7 @@ mkdir_p(dataout)
 
 # data input directory: this will differ for different models. With iris we can use
 # glob
-path = "/badc/cmip6/data/CMIP6/*/*/%s/%s/%s/3hr/" % (model, scenario, run)
+path = "/gws/scratch-nopw/pmcjs/%s/%s/%s/3hr/rsds/gn/" (model, scenario, run)
 
 # the final bit of the path will also vary by model grid
 vars = ['tas', 'huss', 'ps', 'rlds', 'rlus', 'rsds', 'rsus', 'rsdsdiff', 'uas', 'vas']
@@ -53,12 +53,11 @@ cubes = {}
 with warnings.catch_warnings():
     warnings.simplefilter('ignore')
     for var in vars:
-        cubes[var] = iris.load(path + '%s/*/latest/%s_3hr_%s_%s_%s_*_*.nc' % (var, var, model, scenario, run))
+        cubes[var] = iris.load(path + '%s/gn/%s_3hr_%s_%s_%s_*_*.nc' % (var, var, model, scenario, run))
         equalise_attributes(cubes[var])
         unify_time_units(cubes[var])
         cubes[var] = cubes[var].concatenate_cube()
-fp = glob.glob(path + '%s/*/latest/%s_3hr_%s_%s_%s_*_*.nc' % (var, var, model, scenario, run))
-grid = fp[0].split('/')[12]
+fp = glob.glob(path + '%s/gn/%s_3hr_%s_%s_%s_*_*.nc' % (var, var, model, scenario, run))
 
 # check that all of the cubes are the same number of time points.
 # If they are not, there are some missing variable slices and
@@ -195,4 +194,4 @@ for year in range(int(startyear), int(endyear)):
     #)
 
     # save the output
-    iris.save(utci_cube, dataout + 'utci_3hr_%s_%s_%s_%s_%4d01010300-%d01010000.nc' % (model, scenario, run, grid, year, year+1))
+    iris.save(utci_cube, dataout + 'utci_3hr_%s_%s_%s_gn_%4d01010300-%d01010000.nc' % (model, scenario, run, year, year+1))
