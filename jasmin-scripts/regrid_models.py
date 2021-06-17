@@ -46,25 +46,13 @@ dummy_cube.coord('latitude').guess_bounds()
 origdir = '/work/scratch-nopw/pmcjs/'
 regriddir = '/work/scratch-nopw/pmcjs/utci_projections_1deg/'
 
-#models = ['HadGEM3-GC31-LL', 'BCC-CSM2-MR', 'CMCC-ESM2']
-#runs = {
-#    'HadGEM3-GC31-LL': ['r1i1p1f3'],
-#    'BCC-CSM2-MR': ['r1i1p1f1'],
-#    'CMCC-ESM2': ['r1i1p1f1'],
-#}
-#scenarios = {}
-#scenarios['HadGEM3-GC31-LL'] = {}
-#scenarios['BCC-CSM2-MR'] = {}
-#scenarios['CMCC-ESM2'] = {}
-#scenarios['HadGEM3-GC31-LL']['r1i1p1f3'] = ['historical', 'ssp126', 'ssp245', 'ssp585']
-#scenarios['BCC-CSM2-MR']['r1i1p1f1'] = ['historical', 'ssp126', 'ssp245', 'ssp585']
-#scenarios['CMCC-ESM2']['r1i1p1f1'] = ['historical', 'ssp126', 'ssp245', 'ssp585']
-
-#models = ['CMCC-ESM2']
-#runs = {
-#    'CMCC-ESM2': ['r1i1p1f1']
-#}
 scenarios = {}
+scenarios['HadGEM3-GC31-LL'] = {}
+scenarios['HadGEM3-GC31-LL']['r1i1p1f3'] = ['historical', 'ssp126', 'ssp245', 'ssp585']
+scenarios['BCC-CSM2-MR'] = {}
+scenarios['BCC-CSM2-MR']['r1i1p1f1'] = ['historical', 'ssp126', 'ssp245', 'ssp585']
+scenarios['CMCC-ESM2'] = {}
+scenarios['CMCC-ESM2']['r1i1p1f1'] = ['historical', 'ssp126', 'ssp245', 'ssp585']
 scenarios['ACCESS-CM2'] = {}
 scenarios['ACCESS-CM2']['r1i1p1f1'] = ['historical', 'ssp126', 'ssp245', 'ssp585']
 scenarios['CanESM5'] = {}
