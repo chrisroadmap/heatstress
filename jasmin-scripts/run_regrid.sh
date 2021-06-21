@@ -2,7 +2,7 @@
 #SBATCH -p short-serial
 #SBATCH -o job_output/%j.out
 #SBATCH -e job_output/%j.err
-#SBATCH -t 24:00:00
+#SBATCH -t 04:00:00
 #SBATCH --mem=32000 
 
 conda activate heatstress
