@@ -55,4 +55,4 @@ for model in scenarios:
                     cube_model.coord('time').points = cube_model.coord('time').points - 1/16  # put on radiation timesteps
                 result = cube_model.collapsed('time', iris.analysis.PERCENTILE, percent=[95, 98, 99, 99.5, 99.9, 100])
                 iris.save(result, outdir + 'utci_3hr_%s_%s_%s_gn_%4d.nc' % (model, scenario, run, year))
-                sys.stdout.write('%s %s %s %s success' % (model, run, scenario, year))
+                sys.stdout.write('%s %s %s %s success\n' % (model, run, scenario, year))
