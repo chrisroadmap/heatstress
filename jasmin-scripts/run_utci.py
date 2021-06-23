@@ -53,7 +53,12 @@ cubes = {}
 with warnings.catch_warnings():
     warnings.simplefilter('ignore')
     for var in vars:
-        cubes[var] = iris.load(path + '%s/*/latest/%s_3hr_%s_%s_%s_*_*.nc' % (var, var, model, scenario, run))
+        # Hack for corrupt file in KACE historical
+        # temporarily downloaded this to a location on the GWS
+        if var!='rsdsdiff':
+            cubes[var] = iris.load(path + '%s/*/latest/%s_3hr_%s_%s_%s_*_*.nc' % (var, var, model, scenario, run))
+        else:
+            cubes[var] = iris.load('/gws/pw/j05/cop26_hackathons/bristol/project10/TEMP_KACE-1-0-G/rsdsdiff*.nc')
         equalise_attributes(cubes[var])
         unify_time_units(cubes[var])
         cubes[var] = cubes[var].concatenate_cube()
