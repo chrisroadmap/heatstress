@@ -55,8 +55,11 @@ with warnings.catch_warnings():
     for var in vars:
         # Hack for corrupt file in KACE historical
         # temporarily downloaded this to a location on the GWS
+        # and another hack required because the historical variables are different lengths
         if var!='rsdsdiff':
-            cubes[var] = iris.load(path + '%s/*/latest/%s_3hr_%s_%s_%s_*_*.nc' % (var, var, model, scenario, run))
+            cubes[var] = iris.cube.CubeList()
+            for year in [1980, 1990, 2000, 2010]:
+                cubes[var].append(iris.load_cube(path + '%s/*/latest/%s_3hr_%s_%s_%s_*_%04d*.nc' % (var, var, model, scenario, run, year)))
         else:
             cubes[var] = iris.load('/gws/pw/j05/cop26_hackathons/bristol/project10/TEMP_KACE-1-0-G/rsdsdiff*.nc')
         equalise_attributes(cubes[var])
@@ -113,10 +116,15 @@ for year in range(int(startyear), int(endyear)):
     # metadata for any new models.
     if model in ['BCC-CSM2-MR', 'MRI-ESM2-0']:
         first_hour_tas=0
+        first_minute_tas=0
+    elif model in ['KACE-1-0-G']:
+        first_hour_tas=1
+        first_minute_tas=30
     else:
         first_hour_tas=3
+        first_minute_tas=0
 
-    i_start = int(8 * (cftime.date2num(cftime.datetime(year, 1, 1, first_hour_tas, 0, 0, calendar=calendar), 'days since 1850-01-01 00:00', calendar=calendar) - cftime.date2num(first_time, 'days since 1850-01-01 00:00', calendar=calendar)))
+    i_start = int(8 * (cftime.date2num(cftime.datetime(year, 1, 1, first_hour_tas, first_minute_tas, 0, calendar=calendar), 'days since 1850-01-01 00:00', calendar=calendar) - cftime.date2num(first_time, 'days since 1850-01-01 00:00', calendar=calendar)))
     print(model, scenario, run, year, i_start)
     days_in_year = cftime.date2num(cftime.datetime(year+1, 1, 1, 0, 0, 0, calendar=calendar), 'days since 1850-01-01 00:00', calendar=calendar) - cftime.date2num(cftime.datetime(year, 1, 1, 0, 0, 0, calendar=calendar), 'days since 1850-01-01 00:00', calendar=calendar)
     timepoints_in_year = 8 * days_in_year  # 8 x 3-hr timepoints per day
