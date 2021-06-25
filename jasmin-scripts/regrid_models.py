@@ -47,24 +47,25 @@ origdir = '/work/scratch-nopw/pmcjs/'
 regriddir = '/work/scratch-nopw/pmcjs/utci_projections_1deg/'
 
 scenarios = {}
-scenarios['HadGEM3-GC31-LL'] = {}
-scenarios['HadGEM3-GC31-LL']['r1i1p1f3'] = ['historical', 'ssp126', 'ssp245', 'ssp585']
-scenarios['BCC-CSM2-MR'] = {}
-scenarios['BCC-CSM2-MR']['r1i1p1f1'] = ['historical', 'ssp126', 'ssp245', 'ssp585']
-scenarios['CMCC-ESM2'] = {}
-scenarios['CMCC-ESM2']['r1i1p1f1'] = ['historical', 'ssp126', 'ssp245', 'ssp585']
-scenarios['ACCESS-CM2'] = {}
-scenarios['ACCESS-CM2']['r1i1p1f1'] = ['historical', 'ssp126', 'ssp245', 'ssp585']
-scenarios['CanESM5'] = {}
-scenarios['CanESM5']['r1i1p2f1'] = ['historical', 'ssp126', 'ssp245', 'ssp585']
-scenarios['CMCC-CM2-SR5'] = {}
-scenarios['CMCC-CM2-SR5']['r1i1p1f1'] = ['historical', 'ssp245', 'ssp585']
-scenarios['MRI-ESM2-0'] = {}
-scenarios['MRI-ESM2-0']['r1i1p1f1'] = ['historical', 'ssp585']
+#scenarios['HadGEM3-GC31-LL'] = {}
+#scenarios['HadGEM3-GC31-LL']['r1i1p1f3'] = ['historical', 'ssp126', 'ssp245', 'ssp585']
+#scenarios['BCC-CSM2-MR'] = {}
+#scenarios['BCC-CSM2-MR']['r1i1p1f1'] = ['historical', 'ssp126', 'ssp245', 'ssp585']
+#scenarios['CMCC-ESM2'] = {}
+#scenarios['CMCC-ESM2']['r1i1p1f1'] = ['historical', 'ssp126', 'ssp245', 'ssp585']
+#scenarios['ACCESS-CM2'] = {}
+#scenarios['ACCESS-CM2']['r1i1p1f1'] = ['historical', 'ssp126', 'ssp245', 'ssp585']
+#scenarios['CanESM5'] = {}
+#scenarios['CanESM5']['r1i1p2f1'] = ['historical', 'ssp126', 'ssp245', 'ssp585']
+#scenarios['CMCC-CM2-SR5'] = {}
+#scenarios['CMCC-CM2-SR5']['r1i1p1f1'] = ['historical', 'ssp245', 'ssp585']
+#scenarios['MRI-ESM2-0'] = {}
+#scenarios['MRI-ESM2-0']['r1i1p1f1'] = ['historical', 'ssp585']
 scenarios['KACE-1-0-G'] = {}
-scenarios['KACE-1-0-G']['r1i1p1f1'] = ['ssp245']
-scenarios['HadGEM3-GC31-MM'] = {}
-scenarios['HadGEM3-GC31-MM']['r1i1p1f3'] = ['historical', 'ssp126', 'ssp585']
+scenarios['KACE-1-0-G']['r1i1p1f1'] = ['historical']
+#scenarios['KACE-1-0-G']['r1i1p1f1'] = ['historical', 'ssp245']
+#scenarios['HadGEM3-GC31-MM'] = {}
+#scenarios['HadGEM3-GC31-MM']['r1i1p1f3'] = ['historical', 'ssp126', 'ssp585']
 
 for model in scenarios:
     for run in scenarios[model]:
