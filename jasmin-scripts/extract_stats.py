@@ -25,11 +25,11 @@ scenarios = {}
 #scenarios['MRI-ESM2-0'] = {}
 #scenarios['MRI-ESM2-0']['r1i1p1f1'] = ['historical', 'ssp585']
 scenarios['KACE-1-0-G'] = {}
-scenarios['KACE-1-0-G']['r1i1p1f1'] = ['ssp245']
+scenarios['KACE-1-0-G']['r1i1p1f1'] = ['historical', 'ssp245']
 #scenarios['HadGEM3-GC31-MM'] = {}
 #scenarios['HadGEM3-GC31-MM']['r1i1p1f3'] = ['historical', 'ssp126', 'ssp585']
-scenarios['HadGEM3-GC31-LL'] = {}
-scenarios['HadGEM3-GC31-LL']['r1i1p1f3'] = ['historical', 'ssp126', 'ssp245', 'ssp585']
+#scenarios['HadGEM3-GC31-LL'] = {}
+#scenarios['HadGEM3-GC31-LL']['r1i1p1f3'] = ['historical', 'ssp126', 'ssp245', 'ssp585']
 #scenarios['BCC-CSM2-MR'] = {}
 #scenarios['BCC-CSM2-MR']['r1i1p1f1'] = ['historical', 'ssp126', 'ssp245', 'ssp585']
 #scenarios['CMCC-ESM2'] = {}
@@ -51,8 +51,10 @@ for model in scenarios:
                 cube_model = iris.load_cube(modeldir + 'utci_3hr_%s_%s_%s_gn_%4d01010300-%4d01010000.nc' % (model, scenario, run, year, (year+1)))
                 if model in ['BCC-CSM2-MR', 'MRI-ESM2-0']:
                     cube_model.coord('time').points = cube_model.coord('time').points + 1/16
-                else:
-                    cube_model.coord('time').points = cube_model.coord('time').points - 1/16  # put on radiation timesteps
+                else if model not in ['KACE-1-0-G']:
+                    cube_model.coord('time').points = cube_model.coord('time').points - 1/16
+                # put on radiation timesteps
+                # KACE already well-behaved I think
                 result = cube_model.collapsed('time', iris.analysis.PERCENTILE, percent=[95, 98, 99, 99.5, 99.9, 100])
                 iris.save(result, outdir + 'utci_3hr_%s_%s_%s_gn_%4d.nc' % (model, scenario, run, year))
                 sys.stdout.write('%s %s %s %s success\n' % (model, run, scenario, year))
