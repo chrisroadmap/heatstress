@@ -36,6 +36,10 @@ scenarios['CMCC-ESM2'] = {}
 scenarios['CMCC-ESM2']['r1i1p1f1'] = ['historical', 'ssp126', 'ssp245', 'ssp585']
 
 for model in scenarios:
+    if model in ['KACE-1-0-G']:
+        grid='gr'
+    else:
+        grid='gn'
     for run in scenarios[model]:
         for scenario in scenarios[model][run]:
             modeldir = '/work/scratch-nopw/pmcjs/utci_projections_1deg/%s/%s/%s/' % (model, scenario, run)
@@ -48,7 +52,7 @@ for model in scenarios:
                 firstyear = 2015
                 lastyear = 2101
             for year in range(firstyear, lastyear):
-                cube_model = iris.load_cube(modeldir + 'utci_3hr_%s_%s_%s_gn_%4d01010300-%4d01010000.nc' % (model, scenario, run, year, (year+1)))
+                cube_model = iris.load_cube(modeldir + 'utci_3hr_%s_%s_%s_%s_%4d01010300-%4d01010000.nc' % (model, scenario, run, grid, year, (year+1)))
                 if model in ['BCC-CSM2-MR', 'MRI-ESM2-0']:
                     cube_model.coord('time').points = cube_model.coord('time').points + 1/16
                 elif model not in ['KACE-1-0-G']:
